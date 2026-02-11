@@ -1,10 +1,10 @@
-//Better Ultrasonic and Servo
 #include <Servo.h>
 Servo myServo;
-const int trigPin = 9;
-const int echoPin = 10;
+const int trigPin = 10;
+const int echoPin = 9;
 const int servoPin = 8;
-
+const int range1a = 5;
+const int range1b = 50;
 float duration, distance;
 
 void setup() {
@@ -24,13 +24,16 @@ void loop() {
   duration = pulseIn(echoPin, HIGH);
   distance = duration * 0.034 / 2;
 
-  // int safeDistance = constrain(distance, 5, 50);
+  int safeDistance = constrain(distance, range1a, range1b);
 
-  int servoAngle = map(distance, 5, 50, 0, 360);
+  int servoAngle = map(safeDistance, range1a, range1b, 0, 180);
+
+  if(distance < 5){
+    servoAngle = 0;
+  }
 
   myServo.write(servoAngle);
 
-  // Debugging output to Serial Monitor
   Serial.print("Distance: ");
   Serial.print(distance);
   Serial.print(" cm | Servo Angle: ");
